@@ -49,6 +49,16 @@ class InvenioDAMAPService(Service):
             self.config.links_item,
         )
 
+    def _create_headers(self, identity):
+        headers = {
+            "Authorization": self.config.damap_shared_secret,
+        }
+
+        headers.update(
+            self.config.damap_custom_header_function(identity=identity)
+        )
+
+        return headers
 
     def search(self, identity, params):
         """Perform search for DMPs."""
@@ -59,10 +69,12 @@ class InvenioDAMAPService(Service):
         query_param = search_params["q"]
         filters = []
 
-        personID = self.config.damap_person_id_func()
+        person_id = self.config.damap_person_id_function(identity=identity)
         r = requests.get(
             url=self.config.damap_base_url
-            + "/api/invenio-damap/dmps/person/{}".format(personID)
+            + "/api/invenio-damap/dmps/person/{}".format(person_id),
+            headers=self._create_headers(identity),
+            params=search_params,
         )
 
         r.raise_for_status()
@@ -74,7 +86,6 @@ class InvenioDAMAPService(Service):
             per_page=search_params["size"],
             total=10,
         )
-
 
         return self.result_list(
             self,
