@@ -10,6 +10,19 @@
 from flask import current_app
 
 
+def remove_none_entries(dictionary):
+    """Remove ``None`` values from the dictionary and nested dictionaries."""
+    to_remove = []
+    for key, value in dictionary.items():
+        if isinstance(value, dict):
+            remove_none_entries(value)
+        elif value is None:
+            to_remove.append(key)
+
+    for key in to_remove:
+        dictionary.pop(key)
+
+
 def export_as_madmp(record_item):
     """Export the given RecordItem in RDA DMP Common Standard."""
     metadata = record_item.data["metadata"]
@@ -95,6 +108,7 @@ def export_as_madmp(record_item):
         "license": licenses,
         "title": title,
     }
+    remove_none_entries(distribution)
 
     dataset = {
         "data_quality_assurance": data_quality_assurance,
@@ -113,5 +127,6 @@ def export_as_madmp(record_item):
         "title": title,
         "type": type_,
     }
+    remove_none_entries(dataset)
 
     return dataset
