@@ -23,13 +23,25 @@ def remove_none_entries(dictionary):
         dictionary.pop(key)
 
 
-def export_as_madmp(record_item):
-    """Export the given RecordItem in RDA DMP Common Standard."""
-    metadata = record_item.data["metadata"]
-    embargo_end_date = record_item.data["access"]["embargo"].get("until")
+def export_as_madmp(record, links=None):
+    """Export the given RecordItem in RDA DMP Common Standard.
+
+    The specified ``record`` can be either a ``RecordItem``, as returned by
+    ``record_service.read()``, or an ``RDMRecord`` object.
+    In the former case, the value of the supplied ``links`` dictionary is
+    ignored while in the latter case, it is required.
+    """
+    if hasattr(record, "_record"):
+        links = record.links
+        record = record._record
+    elif links is None:
+        raise TypeError("'links' cannot be None if 'record' is not a RecordItem")
+
+    metadata = record["metadata"]
+    embargo_end_date = record["access"]["embargo"].get("until")
 
     # fields for "dataset"
-    dataset_id = record_item.id
+    dataset_id = record["id"]
     title = metadata.get("title", "")
     description = metadata.get("description", "")
     publication_date = metadata.get("publication_date")
@@ -56,11 +68,9 @@ def export_as_madmp(record_item):
     technical_resource = None
 
     # fields for "distribution":
-    if record_item._record.files.enabled:
-        _files = list(record_item._record.files.values())
-        download_url = record_item.links[
-            "files"
-        ]  # FIXME this only points to another JSON object
+    if record.files.enabled:
+        _files = list(record.files.values())
+        download_url = links["files"]  # FIXME this only points to another JSON object
         byte_size = sum([file_rec.file.size for file_rec in _files])
         formats = [
             f.object_version.mimetype for f in _files if f.object_version.mimetype
@@ -71,9 +81,13 @@ def export_as_madmp(record_item):
         byte_size = 0
         formats = []
 
-    landing_page_url = record_item.links["self_html"]
+    landing_page_url = links["self_html"]
     available_until = None
-    data_access = "open" if record_item.data["access"]["status"] == "open" else "closed"
+    data_access = (
+        "open"
+        if record["access"]["record"] == record["access"]["files"] == "public"
+        else "closed"
+    )
     licenses = [
         {
             "license_ref": lic.get("props", {}).get("url"),
