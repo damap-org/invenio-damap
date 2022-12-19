@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2022 TU Wien.
+
 #
-# Invenio is free software; you can redistribute it and/or modify
+# Invenio-DAMAP is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
 """Extension."""
 
+from flask import Blueprint
 
 from invenio_damap.resources import InvenioDAMAPResource, InvenioDAMAPResourceConfig
 from invenio_damap.services import InvenioDAMAPService, InvenioDAMAPServiceConfig
@@ -29,6 +32,11 @@ class InvenioDAMAP(object):
 
         self.init_services(app)
         self.init_resource(app)
+
+        # ui blueprint: templates are only picked up here
+        # TODO: Register via cfg entrypoint
+        bp = Blueprint("damap_ui_ext", __name__, template_folder="templates")
+        app.register_blueprint(bp)
 
     def init_config(self, app):
         """Initialize configuration.
