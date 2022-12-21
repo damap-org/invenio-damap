@@ -106,7 +106,7 @@ class BaseServiceListResult(ServiceListResult):
                 ),
             )
             if self._links_item_tpl:
-                projection["links"] = self._links_item_tpl.expand(hit)
+                projection["links"] = self._links_item_tpl.expand(self._identity, hit)
 
             yield projection
 
@@ -133,7 +133,7 @@ class BaseServiceListResult(ServiceListResult):
 
         if self._params:
             if self._links_tpl:
-                res["links"] = self._links_tpl.expand(self.pagination)
+                res["links"] = self._links_tpl.expand(self._identity, self.pagination)
 
         return res
 

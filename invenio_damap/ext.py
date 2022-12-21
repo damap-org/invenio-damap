@@ -8,16 +8,10 @@
 """Extension."""
 
 
-from . import config
+from invenio_damap.resources import InvenioDAMAPResource, InvenioDAMAPResourceConfig
+from invenio_damap.services import InvenioDAMAPService, InvenioDAMAPServiceConfig
 
-from invenio_damap.resources import (
-    InvenioDAMAPResource,
-    InvenioDAMAPResourceConfig,
-)
-from invenio_damap.services import (
-    InvenioDAMAPService,
-    InvenioDAMAPServiceConfig,
-)
+from . import config
 
 
 class InvenioDAMAP(object):

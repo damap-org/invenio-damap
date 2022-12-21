@@ -29,9 +29,30 @@ class InvenioDAMAPResource(ErrorHandlersMixin, Resource):
         """Create the URL rules for the Invenio-DAMAP server resource."""
         routes = self.config.routes
         url_rules = [
-            route("GET" , routes["damap-prefix"] + routes["dmp-prefix"] + routes["list"], self.search),
-            route("POST", routes["damap-prefix"] + routes["dmp-prefix"]                 , self.create),
-            route("GET" , routes["damap-prefix"] + routes["dmp-prefix"] + routes["item"], self.read),
+            route(
+                "GET",
+                routes["damap-prefix"] + routes["dmp-prefix"] + routes["list"],
+                self.search,
+            ),
+            route(
+                "POST",
+                routes["damap-prefix"]
+                + routes["dmp-prefix"]
+                + routes["dmp-id"]
+                + routes["dataset"]
+                + routes["record-id"],
+                self.add_record_to_dmp,
+            ),
+            # TODO: Remove after testing
+            route(
+                "GET",
+                routes["damap-prefix"]
+                + routes["dmp-prefix"]
+                + routes["dmp-id"]
+                + routes["dataset"]
+                + routes["record-id"],
+                self.add_record_to_dmp,
+            ),
         ]
 
         return url_rules
@@ -51,11 +72,14 @@ class InvenioDAMAPResource(ErrorHandlersMixin, Resource):
         return hits.to_dict(), 200
 
     @request_data
+    @request_view_args
     @response_handler()
-    def create(self):
+    def add_record_to_dmp(self):
         """Create an item."""
-        item = self.service.create(
+        item = self.service.add_record_to_dmp(
             g.identity,
+            resource_requestctx.view_args["recid"],
+            resource_requestctx.view_args["dmpid"],
             resource_requestctx.data or {},
         )
         return item.to_dict(), 201

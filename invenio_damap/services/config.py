@@ -10,23 +10,15 @@
 from flask_babelex import gettext as _
 from invenio_records_resources.services import ServiceConfig
 from invenio_records_resources.services.base import Link
-from invenio_records_resources.services.base.config import (
-    ConfiguratorMixin,
-    FromConfig,
-)
+from invenio_records_resources.services.base.config import ConfiguratorMixin, FromConfig
 from invenio_records_resources.services.records.links import pagination_links
 from sqlalchemy import asc, desc
 
-from invenio_damap.services.schema import (
-    InvenioDAMAPSchema,
-)
+from invenio_damap.services.schema import InvenioDAMAPSchema
 
 from ..services.links import InvenioDAMAPSetLink
 from ..services.permissions import InvenioDAMAPPermissionPolicy
-from ..services.results import (
-    DMPItem,
-    DMPList,
-)
+from ..services.results import DMPItem, DMPList
 
 
 class SearchOptions:
@@ -74,9 +66,7 @@ class InvenioDAMAPServiceConfig(ServiceConfig, ConfiguratorMixin):
 
     damap_base_url = FromConfig("INVENIO_DAMAP_DAMAP_BASE_URL", "")
     damap_person_id_function = FromConfig("INVENIO_DAMAP_PERSON_ID_FUNCTION")
-    damap_custom_header_function = FromConfig(
-        "INVENIO_DAMAP_CUSTOM_HEADER_FUNCTION"
-    )
+    damap_custom_header_function = FromConfig("INVENIO_DAMAP_CUSTOM_HEADER_FUNCTION")
     damap_shared_secret = FromConfig("INVENIO_DAMAP_SHARED_SECRET")
 
     service_id = "invenio_damap"

@@ -12,15 +12,33 @@ from marshmallow_utils.fields import NestedAttribute, SanitizedUnicode
 
 
 class InvenioDAMAPProjectSchema(Schema):
-    """Marshmallow schema for Invenio-DAMAP."""
+    """Marshmallow schema for Invenio-DAMAP project."""
+
+    id = fields.Int()
+    description = SanitizedUnicode(load_default=None, dump_default=None)
+    title = SanitizedUnicode(required=True, validate=validate.Length(min=1, max=255))
+
+    class Meta:
+        """Meta attributes for the schema."""
+
+        unknown = EXCLUDE
+        ordered = True
+
+
+class InvenioDAMAPDatasetSchema(Schema):
+    """Marshmallow schema for Invenio-DAMAP dataset."""
+
+    class InvenioDAMAPDatasetIdentifier(Schema):
+        """Marshmallow schema for the dataset identifier."""
+
+        type = fields.Str()
+        identifier = fields.Str()
 
     description = SanitizedUnicode(load_default=None, dump_default=None)
-    title = SanitizedUnicode(
-        required=True, validate=validate.Length(min=1, max=255)
+    title = SanitizedUnicode(required=True, validate=validate.Length(min=1, max=255))
+    datasetId = fields.Nested(
+        data_key="datasetId", nested=InvenioDAMAPDatasetIdentifier
     )
-    # created = fields.DateTime(dump_only=True)
-    # updated = fields.DateTime(dump_only=True)
-    id = fields.Int()
 
     class Meta:
         """Meta attributes for the schema."""
@@ -30,13 +48,14 @@ class InvenioDAMAPProjectSchema(Schema):
 
 
 class InvenioDAMAPSchema(Schema):
-    """Marshmallow schema for Invenio-DAMAP."""
+    """Marshmallow schema for Invenio-DAMAP maDMP."""
 
     # created = fields.DateTime(dump_only=True)
     # updated = fields.DateTime(dump_only=True)
     id = fields.Int()
     created = fields.Str()
     project = fields.Nested(nested=InvenioDAMAPProjectSchema)
+    datasets = fields.List(fields.Nested(nested=InvenioDAMAPDatasetSchema))
 
     class Meta:
         """Meta attributes for the schema."""
