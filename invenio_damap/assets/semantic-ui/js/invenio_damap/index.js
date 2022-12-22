@@ -4,36 +4,52 @@
 // Invenio-DAMAP is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import $ from "jquery";
 
 document.addEventListener("DOMContentLoaded", function() {
+  
   $("#damap-button").on("click", function(e) {
     $.ajax({
       type: "GET",
       url: "/api/invenio_damap/damap/dmp",
       success: function(response) {
+        removeDamapPopup();
         initDamapPopup();
+        showDamapPopup();
         fillDamapPopup(response);
       }
     });
   });
 
+
+  function showDamapPopup() {
+    let $popup = $("#popup")
+    $popup.modal("show");
+  }
+
+  function removeDamapPopup() {
+    let $popup = $("#popup")
+    $popup.remove();
+
+  }
+
   function initDamapPopup() {
     // render the containers first
-    $popup = $("<div></div>", {"id": "popup", "class": "ui modal"}).appendTo("body");
+    let $popup = $("<div></div>", {"id": "popup", "class": "ui modal"}).appendTo("body");
     // popup header
-    $header = $("<div></div>", {"class": "header"}).appendTo($popup);
+    let $header = $("<div></div>", {"class": "header"}).appendTo($popup);
     $header.text("Link record to DMP");
     // popup content
     $("<div></div>", {"class": "content"}).appendTo("#popup");
     // render the popup
-    $popup.modal("setting", "transition", "horizontal flip").modal("show");
+    $popup.modal("setting", "transition", "horizontal flip");
   }
 
   function fillDamapPopup(response) {
     // define variables
-    $questions_label = "Answer the questions, then select the corresponding DMP.";
-    $question_types = ["personal_data", "sensitive_data", "ethical_issues"];
-    $choices = ["yes", "no", "unknown"];
+    let $questions_label = "Answer the questions, then select the corresponding DMP.";
+    let $question_types = ["personal_data", "sensitive_data", "ethical_issues"];
+    let $choices = ["yes", "no", "unknown"];
 
     // add label for the questions and container
     $("#popup .content").append($("<label>" + $questions_label + "</label>").addClass("bold"));
@@ -41,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // `question_types` groups * number of choices
     for (var type of $question_types) {
-      $question = `Does the dataset contain ${type}? *`.replace("_", " ");
+      let $question = `Does the dataset contain ${type}? *`.replace("_", " ");
       // fill question text
       $("<div></div>").attr({"id": `group-${type}`}).append($question).appendTo("#radios");
       // radio group wrapper (to apply styling)
@@ -69,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
       // create current dmp container
       $("<div></div>").attr({"id": "dmp-" + v.id, "class": "item"}).appendTo("#dmp-list");
       // define the "add" button and float it right-handside
-      $add_button = '<button class="ui button" type="button"><i aria-hidden="true" class="plus icon"></i>Add</button>';
+      let $add_button = '<button class="ui button" type="button"><i aria-hidden="true" class="plus icon"></i>Add</button>';
       $("#dmp-" + v.id).append('<div class="right floated middle aligned content">' + $add_button + '</div>');
       // add row header as the project title and content as the project description
       $("<div class='header'>"+ v.project.title +"</div>").appendTo("#dmp-" + v.id);

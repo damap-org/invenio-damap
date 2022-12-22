@@ -43,16 +43,6 @@ class InvenioDAMAPResource(ErrorHandlersMixin, Resource):
                 + routes["record-id"],
                 self.add_record_to_dmp,
             ),
-            # TODO: Remove after testing
-            route(
-                "GET",
-                routes["damap-prefix"]
-                + routes["dmp-prefix"]
-                + routes["dmp-id"]
-                + routes["dataset"]
-                + routes["record-id"],
-                self.add_record_to_dmp,
-            ),
         ]
 
         return url_rules

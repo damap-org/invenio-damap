@@ -36,7 +36,7 @@ class InvenioDAMAPResourceConfig(ResourceConfig):
     """Invenio-DAMAP resource config."""
 
     # Blueprint configuration
-    blueprint_name = "invenio_damap-server"
+    blueprint_name = "invenio_damap"
     url_prefix = "/invenio_damap"
     routes = {
         "damap-prefix": "/damap",

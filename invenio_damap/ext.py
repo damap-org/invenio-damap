@@ -33,11 +33,6 @@ class InvenioDAMAP(object):
         self.init_services(app)
         self.init_resource(app)
 
-        # ui blueprint: templates are only picked up here
-        # TODO: Register via cfg entrypoint
-        bp = Blueprint("damap_ui_ext", __name__, template_folder="templates")
-        app.register_blueprint(bp)
-
     def init_config(self, app):
         """Initialize configuration.
 
