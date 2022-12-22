@@ -39,25 +39,34 @@ def export_as_madmp(record, links=None):
 
     metadata = record["metadata"]
     embargo_end_date = record["access"]["embargo"].get("until")
+    landing_page_url = links["self_html"]
 
     # fields for "dataset"
-    dataset_id = record["id"]
+    dataset_id = {
+        "identifier": landing_page_url,  # NOTE: could also be DOI, if configured
+        "type": "handle",
+    }
     title = metadata.get("title", "")
     description = metadata.get("description", "")
     publication_date = metadata.get("publication_date")
     keywords = [subject["subject"] for subject in metadata.get("subjects", [])]
     language = metadata["languages"][0]["id"] if metadata.get("languages") else None
-    type_ = metadata["resource_type"]["title"]["en"]
+
+    # basically always other, as DAMAP has not implemented full DataCite compatibility
+    # type_ = metadata["resource_type"]["title"]["en"]
+    type_ = "Other"
 
     # some fields are basically constant across all records
-    metadata_ = {
-        "description": "Metadata according to the DataCite 4.3 kernel",
-        "language": "eng",
-        "metadata_standard_id": {
-            "identifier": "http://schema.datacite.org/meta/kernel-4.3/",
-            "type": "url",
+    metadata_ = [
+        {
+            "description": "Metadata according to the DataCite 4.3 kernel",
+            "language": "eng",
+            "metadata_standard_id": {
+                "identifier": "http://schema.datacite.org/meta/kernel-4.3/",
+                "type": "url",
+            },
         },
-    }
+    ]
     personal_data = "unknown"
     sensitive_data = "unknown"
 
@@ -81,7 +90,6 @@ def export_as_madmp(record, links=None):
         byte_size = 0
         formats = []
 
-    landing_page_url = links["self_html"]
     available_until = None
     data_access = (
         "open"

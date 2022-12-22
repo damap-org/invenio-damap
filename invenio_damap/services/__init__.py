@@ -11,7 +11,4 @@ from .services import InvenioDAMAPService
 """Invenio-DAMAP services for InvenioRDM."""
 
 
-__all__ = (
-    "InvenioDAMAPService",
-    "InvenioDAMAPServiceConfig"
-)
+__all__ = ("InvenioDAMAPService", "InvenioDAMAPServiceConfig")

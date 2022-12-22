@@ -8,10 +8,6 @@
 from .config import InvenioDAMAPResourceConfig
 from .resources import InvenioDAMAPResource
 
-
 """Invenio-DAMAP resources for InvenioRDM."""
 
-__all__ = (
-    "InvenioDAMAPResource",
-    "InvenioDAMAPResourceConfig"
-)
+__all__ = ("InvenioDAMAPResource", "InvenioDAMAPResourceConfig")

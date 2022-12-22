@@ -13,9 +13,7 @@ from flask_resources import HTTPJSONException, ResourceConfig, create_error_hand
 from invenio_records_resources.resources.errors import ErrorHandlersMixin
 from invenio_records_resources.resources.records.args import SearchRequestArgsSchema
 
-from ..services.errors import (
-    InvenioDAMAPError,
-)
+from ..services.errors import InvenioDAMAPError
 
 invenio_damap_error_handlers = {
     **ErrorHandlersMixin.error_handlers,
@@ -44,12 +42,17 @@ class InvenioDAMAPResourceConfig(ResourceConfig):
         "damap-prefix": "/damap",
         "dmp-prefix": "/dmp",
         "list": "",
-        "item": "/<id>",
+        "dataset": "/dataset",
+        "record-id": "/<recid>",
+        "dmp-id": "/<dmpid>",
     }
 
     # Request parsing
     request_read_args = {}
-    request_view_args = {"id": ma.fields.String()}
+    request_view_args = {
+        "recid": ma.fields.String(),
+        "dmpid": ma.fields.String(),
+    }
     request_search_args = InvenioDAMAPSearchRequestArgsSchema
 
     error_handlers = invenio_damap_error_handlers
