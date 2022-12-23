@@ -5,6 +5,7 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import $ from "jquery";
+import { http } from "react-invenio-forms";
 
 document.addEventListener("DOMContentLoaded", function() {
   
@@ -50,9 +51,11 @@ document.addEventListener("DOMContentLoaded", function() {
     let $questions_label = "Answer the questions, then select the corresponding DMP.";
     let $question_types = ["personal_data", "sensitive_data", "ethical_issues"];
     let $choices = ["yes", "no", "unknown"];
+    // get record id from hidden input
+    let $recid = $("#recid").val()
 
     // add label for the questions and container
-    $("#popup .content").append($("<label>" + $questions_label + "</label>").addClass("bold"));
+    $("#popup .content").append($("<label><strong>" + $questions_label + "</strong></label>"));
     $("<div></div>", {"id": "radios"}).appendTo("#popup .content");
 
     // `question_types` groups * number of choices
@@ -84,10 +87,23 @@ document.addEventListener("DOMContentLoaded", function() {
     $.each(response["hits"]["hits"], function(k, v) {
       // create current dmp container
       $("<div></div>").attr({"id": "dmp-" + v.id, "class": "item"}).appendTo("#dmp-list");
-      // define the "add" button and float it right-handside
-      let $add_button = '<button class="ui button" type="button"><i aria-hidden="true" class="plus icon"></i>Add</button>';
-      $("#dmp-" + v.id).append('<div class="right floated middle aligned content">' + $add_button + '</div>');
+
+      // define button wrapper, float it right-handside and append to current container
+      let $buttonDiv = $('<div class="right floated middle aligned content"></div>');
+      $("#dmp-" + v.id).append($buttonDiv);
+
+      // define the "add" button and append it to the wrapper
+      let $add_button = $('<button class="ui button" type="button"><i aria-hidden="true" class="plus icon"></i>Add</button>');
+      $buttonDiv.append($add_button);
+
+      // attach onclick with varying url on each button
+      $add_button.on("click", function(e) {
+        http.post(`/api/invenio_damap/damap/dmp/${v.id}/dataset/` + $recid, {});
+        alert("Success");
+      });
+
       // add row header as the project title and content as the project description
+      // must be appended after button wrapper is appended
       $("<div class='header'>"+ v.project.title +"</div>").appendTo("#dmp-" + v.id);
       $("<div class='description'>"+ v.project.description +"</div>").appendTo("#dmp-" + v.id);
     });
