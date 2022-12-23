@@ -24,12 +24,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
   function showDamapPopup() {
-    let $popup = $("#popup")
+    let $popup = $("#popup");
     $popup.modal("show");
   }
 
   function removeDamapPopup() {
-    let $popup = $("#popup")
+    let $popup = $("#popup");
     $popup.remove();
 
   }
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let $question_types = ["personal_data", "sensitive_data", "ethical_issues"];
     let $choices = ["yes", "no", "unknown"];
     // get record id from hidden input
-    let $recid = $("#recid").val()
+    let $recid = $("#recid").val();
 
     // add label for the questions and container
     $("#popup .content").append($("<label><strong>" + $questions_label + "</strong></label>"));
@@ -91,6 +91,12 @@ document.addEventListener("DOMContentLoaded", function() {
       // define button wrapper, float it right-handside and append to current container
       let $buttonDiv = $('<div class="right floated middle aligned content"></div>');
       $("#dmp-" + v.id).append($buttonDiv);
+
+      // if a dataset identifier is the same as record url, display a 'linked' label
+      if (v.datasets.some(dataset => dataset.datasetId.identifier === window.location.href)) {
+        let $info_div = "<div class='ui label'><i class='info icon'></i>Linked</div>";
+        $buttonDiv.append($info_div);
+      }
 
       // define the "add" button and append it to the wrapper
       let $add_button = $('<button class="ui button" type="button"><i aria-hidden="true" class="plus icon"></i>Add</button>');
