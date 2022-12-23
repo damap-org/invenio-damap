@@ -4,7 +4,7 @@
 // Invenio-DAMAP is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import { $ } from "jquery";
+import $ from "jquery";
 import { http } from "react-invenio-forms";
 
 document.addEventListener("DOMContentLoaded", function () {
