@@ -62,7 +62,7 @@ class InvenioDAMAPService(Service):
         """Get the user id from the identity."""
         return self.config.damap_person_id_function(identity=identity)
 
-    def add_record_to_dmp(self, identity, recid, dmp_id, params):
+    def add_record_to_dmp(self, identity, recid, dmp_id, data):
         """Add the provided record to the DMP"""
 
         person_id = self.config.damap_person_id_function(identity=identity)
@@ -70,7 +70,7 @@ class InvenioDAMAPService(Service):
 
         # this will also perform permission checks, ensuring the user may access the record.
         record = current_rdm_records_service.read(identity, recid)
-        exported_record = InvenioDAMAPExport.export_as_madmp(record)
+        exported_record = InvenioDAMAPExport.export_as_madmp(record, **data)
 
         r = requests.post(
             url=self.config.damap_base_url

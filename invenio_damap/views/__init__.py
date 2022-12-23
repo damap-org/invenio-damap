@@ -9,8 +9,10 @@
 """Views."""
 
 from .api import blueprint, create_invenio_damap_api_blueprint
+from .ui import create_ui_blueprint
 
 __all__ = (
     "blueprint",
     "create_invenio_damap_api_blueprint",
+    "create_ui_blueprint",
 )

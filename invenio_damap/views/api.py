@@ -10,7 +10,7 @@
 
 from flask import Blueprint
 
-blueprint = Blueprint("invenio_damap_ext", __name__)
+blueprint = Blueprint("invenio_damap", __name__)
 
 
 @blueprint.record_once

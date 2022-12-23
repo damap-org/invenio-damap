@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2022 TU Wien.
+
 #
-# Invenio is free software; you can redistribute it and/or modify
+# Invenio-DAMAP is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
 """Extension."""
 
+from flask import Blueprint
 
 from invenio_damap.resources import InvenioDAMAPResource, InvenioDAMAPResourceConfig
 from invenio_damap.services import InvenioDAMAPService, InvenioDAMAPServiceConfig

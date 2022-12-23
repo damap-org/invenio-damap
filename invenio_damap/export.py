@@ -23,7 +23,7 @@ def remove_none_entries(dictionary):
         dictionary.pop(key)
 
 
-def export_as_madmp(record, links=None):
+def export_as_madmp(record, links=None, **kwargs):
     """Export the given RecordItem in RDA DMP Common Standard.
 
     The specified ``record`` can be either a ``RecordItem``, as returned by
@@ -67,8 +67,12 @@ def export_as_madmp(record, links=None):
             },
         },
     ]
-    personal_data = "unknown"
-    sensitive_data = "unknown"
+
+    allowed_user_choices = ["yes", "no", "unknown"]
+
+    personal_data = kwargs.get("personal_data") if kwargs.get("personal_data") in allowed_user_choices else "no"
+    sensitive_data = kwargs.get("sensitive_data") if kwargs.get("sensitive_data") in allowed_user_choices else "no"
+    ethical_issues = kwargs.get("ethical_issues") if kwargs.get("ethical_issues") in allowed_user_choices else "no"
 
     # not easily available from technical information:
     data_quality_assurance = None
