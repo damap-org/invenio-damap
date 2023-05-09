@@ -14,14 +14,14 @@ theme = WebpackThemeBundle(
     folder="assets",
     default="semantic-ui",
     themes={
-        "semantic-ui": {
-            "entry": {
+        "semantic-ui": dict(
+            entry= {
                 "invenio-damap": "./js/invenio_damap/index.js",
                 "invenio-damap-button": "./js/invenio_damap/dmpButton.js",
             },
-            "dependencies": {
+            dependencies= {
                 "jquery": "^3.2.1",
             },
-        },
+        ),
     },
 )

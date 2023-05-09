@@ -6,6 +6,7 @@
 // Invenio RDM Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+/*
 import React, { useState } from "react";
 import { Icon, Button, Popup } from "semantic-ui-react";
 import { ShareModal } from "./ShareModal";
@@ -47,3 +48,4 @@ DMPButton.propTypes = {
 DMPButton.defaultProps = {
   disabled: false,
 };
+*/

@@ -12,7 +12,6 @@
 {% if current_user.id in record.parent.get("access").owned_by|map(attribute="user") and record.is_published %}
   <section id="damap-manage-menu" class="ui grid segment rdm-sidebar" aria-label="{{ _('Damap management') }}">
     <div class="column" id="damapManagement">
-      {{ render_dmp_button() }}
     </div>
   </section>
   <input type="hidden" id="recid" name="recid" value="{{ record.id }}"/>
