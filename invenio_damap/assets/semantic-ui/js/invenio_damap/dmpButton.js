@@ -1,23 +1,16 @@
 // This file is part of InvenioRDM
-// Copyright (C) 2022 CERN.
+// Copyright (C) 2021 CERN.
+// Copyright (C) 2021 Northwestern University.
+// Copyright (C) 2021 Graz University of Technology.
 //
-// Invenio RDM is free software; you can redistribute it and/or modify it
+// Invenio RDM Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-// import React from "react";
-import ReactDOM from "react-dom";
-
-import $ from "jquery";
-
-// import { DMPButton } from "./dmpButton";
-
-
 import React, { useState } from "react";
-import { Grid, Icon, Button, Popup } from "semantic-ui-react";
+import { Icon, Button, Popup } from "semantic-ui-react";
 import { ShareModal } from "./ShareModal";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 import PropTypes from "prop-types";
-
 
 export const DMPButton = ({ disabled, recid }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -54,21 +47,3 @@ DMPButton.propTypes = {
 DMPButton.defaultProps = {
   disabled: false,
 };
-
-// =========================================
-
-let element = document.getElementById("invenio-damap-render");
-
-// the render element won't be available if we're not the record owner
-if (element) { 
-  ReactDOM.render(
-    (
-      <Grid.Column className="pt-5">
-        {permissions.can_manage && (
-          <DMPButton disabled={false} recid={""} />
-        )}
-      </Grid.Column>
-    ),
-    element,
-  );
-}
