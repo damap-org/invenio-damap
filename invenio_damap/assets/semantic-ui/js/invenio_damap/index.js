@@ -1,5 +1,5 @@
 // This file is part of Invenio-DAMAP
-// Copyright (C) 2022 TU Wien.
+// Copyright (C) 2022-2023 TU Wien.
 //
 // Invenio-DAMAP is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
@@ -137,8 +137,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // add row header as the project title and content as the project description
       // must be appended after button wrapper is appended
-      $("<div class='header'>" + v.project.title + "</div>").appendTo("#dmp-" + v.id);
-      $("<div class='description'>" + v.project.description + "</div>").appendTo("#dmp-" + v.id);
+      $("<div class='header'>" + (v.project?.title ?? "DMP ID: " + v.id) + "</div>").appendTo("#dmp-" + v.id);
+      $("<div class='description'>" + (v.project?.description ?? "") + "</div>").appendTo("#dmp-" + v.id);
     });
   }
 });
