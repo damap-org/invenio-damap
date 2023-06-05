@@ -9,7 +9,7 @@ import { http } from "react-invenio-forms";
 
 document.addEventListener("DOMContentLoaded", function () {
   let $recid = $("#recid").val();
-  let $question_types = ["personal_data", "sensitive_data", "ethical_issues"];
+  let $question_types = ["personal_data", "sensitive_data"];
 
   $("#damap-button").on("click", function (e) {
     fetchDmps(function (response) {
