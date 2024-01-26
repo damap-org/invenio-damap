@@ -23,3 +23,15 @@ INVENIO_DAMAP_PERSON_ID_FUNCTION = defaultDAMAPPersonIDFetcher
 INVENIO_DAMAP_SHARED_SECRET = "secret stuff or token"
 
 INVENIO_DAMAP_CUSTOM_HEADER_FUNCTION = defaultCustomHeaderFunction
+
+INVENIO_DAMAP_DMP_DATASET_DISTRIBUTION_HOST = {
+    "availability": None,
+    "backup_frequency": None,
+    "backup_type": None,
+    "certified_with": None,
+    "description": None,
+    "geo_location": None,
+    "pid_system": None,
+    "storage_type": None,
+    "support_versioning": None,
+}

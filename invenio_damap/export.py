@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 TU Wien.
+# Copyright (C) 2022-2024 TU Wien.
 #
-# Invenio is free software; you can redistribute it and/or modify
+# Invenio-DAMAP is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
 """Functionality for exporting an RDM record to RDA DMP Common Standard."""
@@ -110,15 +110,7 @@ def export_as_madmp(record, links=None, **kwargs):
     host = {
         "title": str(current_app.config["THEME_SITENAME"]),
         "url": str(current_app.config["SITE_UI_URL"]),
-        "availability": None,
-        "backup_frequency": None,
-        "backup_type": None,
-        "certified_with": None,
-        "description": None,
-        "geo_location": None,
-        "pid_system": None,
-        "storage_type": None,
-        "support_versioning": None,
+        **current_app.config["INVENIO_DAMAP_DMP_DATASET_DISTRIBUTION_HOST"]
     }
 
     # tying it together
