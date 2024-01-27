@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2024 TU Wien.
 #
 # Invenio-DAMAP is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -16,15 +17,15 @@ def defaultCustomHeaderFunction(*args, **kwargs):
     return {}
 
 
-INVENIO_DAMAP_DAMAP_BASE_URL = "http://localhost:8080"
+DAMAP_BASE_URL = "http://localhost:8085"
 
-INVENIO_DAMAP_PERSON_ID_FUNCTION = defaultDAMAPPersonIDFetcher
+DAMAP_PERSON_ID_FUNCTION = defaultDAMAPPersonIDFetcher
 
-INVENIO_DAMAP_SHARED_SECRET = "secret stuff or token"
+DAMAP_SHARED_SECRET = "secret stuff or token"
 
-INVENIO_DAMAP_CUSTOM_HEADER_FUNCTION = defaultCustomHeaderFunction
+DAMAP_CUSTOM_HEADER_FUNCTION = defaultCustomHeaderFunction
 
-INVENIO_DAMAP_DMP_DATASET_DISTRIBUTION_HOST = {
+DAMAP_DMP_DATASET_DISTRIBUTION_HOST = {
     "availability": None,
     "backup_frequency": None,
     "backup_type": None,

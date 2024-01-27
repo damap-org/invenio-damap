@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2024 TU Wien.
 #
 # Invenio-DAMAP is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -64,10 +65,10 @@ class SearchOptions:
 class InvenioDAMAPServiceConfig(ServiceConfig, ConfiguratorMixin):
     """Service factory configuration."""
 
-    damap_base_url = FromConfig("INVENIO_DAMAP_DAMAP_BASE_URL", "")
-    damap_person_id_function = FromConfig("INVENIO_DAMAP_PERSON_ID_FUNCTION")
-    damap_custom_header_function = FromConfig("INVENIO_DAMAP_CUSTOM_HEADER_FUNCTION")
-    damap_shared_secret = FromConfig("INVENIO_DAMAP_SHARED_SECRET")
+    damap_base_url = FromConfig("DAMAP_BASE_URL", "")
+    damap_person_id_function = FromConfig("DAMAP_PERSON_ID_FUNCTION")
+    damap_custom_header_function = FromConfig("DAMAP_CUSTOM_HEADER_FUNCTION")
+    damap_shared_secret = FromConfig("DAMAP_SHARED_SECRET")
 
     service_id = "invenio_damap"
 
