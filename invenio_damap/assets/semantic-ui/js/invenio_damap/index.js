@@ -74,7 +74,7 @@ export class UserQuestions extends React.Component {
     this.setState({
       selectedValues: newSelectedValues,
     });
-    this.props.onChange(this.state.selectedValues);
+    this.props.onChange(newSelectedValues);
   };
 
   render() {
@@ -243,7 +243,7 @@ export class DMPModal extends React.Component {
 
   async onAddUpdateDataset(dmp_id, record) {
     // TODO: Fill with selected answers
-    let userQuestions = this.state;
+    let { userQuestions } = this.state;
     let body = userQuestions;
 
     let response = http.post(
