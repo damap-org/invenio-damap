@@ -8,7 +8,7 @@
 
 """Invenio-DAMAP service API configuration."""
 
-from invenio_i18n import gettext as _
+from flask_babelex import lazy_gettext as _
 from invenio_records_resources.services import ServiceConfig
 from invenio_records_resources.services.base import Link
 from invenio_records_resources.services.base.config import ConfiguratorMixin, FromConfig
