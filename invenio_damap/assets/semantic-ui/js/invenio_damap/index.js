@@ -113,23 +113,6 @@ export class DMPEntry extends React.Component {
     };
   }
 
-  async onAddUpdateDataset(dmp_id, record) {
-    this.setLoading(true);
-    try {
-      // TODO: Fill with selected answers
-      let body = {};
-      await http.post(
-        `/api/invenio_damap/damap/dmp/${dmp_id}/dataset/${record.id}`,
-        body
-      );
-      this.props.onUpdate();
-    } catch (error) {
-      alert(error);
-      console.log(error);
-    }
-    this.setLoading(false);
-  }
-
   setLoading(loading) {
     this.setState({ loading: loading });
   }
@@ -216,7 +199,6 @@ export class DMPModal extends React.Component {
       // this.onError(error.response.data.message);
     }
     this.resetSelectedDmps();
-
     this.setLoading(false);
   }
 
@@ -242,11 +224,10 @@ export class DMPModal extends React.Component {
   };
 
   async onAddUpdateDataset(dmp_id, record) {
-    // TODO: Fill with selected answers
     let { userQuestions } = this.state;
     let body = userQuestions;
 
-    let response = http.post(
+    let response = await http.post(
       `/api/invenio_damap/damap/dmp/${dmp_id}/dataset/${record.id}`,
       body
     );
@@ -254,7 +235,7 @@ export class DMPModal extends React.Component {
     return response;
   }
 
-  addDatasetToDmps = async () => {
+  async addDatasetToDmps() {
     this.setLoading(true);
     let { selectedDmps } = this.state;
     let { record } = this.props;
@@ -262,18 +243,17 @@ export class DMPModal extends React.Component {
     let errors = [];
     let responses = [];
 
-    let promises = selectedDmps.map(async (dmp) => {
+    for (let dmp of selectedDmps) {
       try {
         responses.push(this.onAddUpdateDataset(dmp.id, record));
       } catch (e) {
         errors.push(e);
       }
-    });
-    await Promise.all(promises);
+    }
+    await Promise.all(responses);
     console.log(errors);
-
     this.setLoading(false);
-  };
+  }
 
   resetSelectedDmps = () => {
     this.setState({
