@@ -1,6 +1,6 @@
 // This file is part of InvenioRDM
 // Copyright (C) 2023-2024 Graz University of Technology.
-// Copyright (C) 2023 TU Wien.
+// Copyright (C) 2023-2024 TU Wien.
 //
 // invenio-damap is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
@@ -12,6 +12,7 @@ import {
   Icon,
   Item,
   Button,
+  Message,
   Modal,
   Radio,
   Form,
@@ -164,6 +165,43 @@ DMPEntry.propTypes = {
 
 // DMP Item end
 
+export class GenericMessage extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: props.visible,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.visible !== prevProps.visible) {
+      this.setState({ visible: this.props.visible });
+    }
+  }
+
+  handleDismiss = () => {
+    this.setState({ visible: false })
+  }
+
+  render() {
+    const { visible } = this.state;
+
+    return (
+      <>
+        {visible && (
+          <Message
+            success
+            onDismiss={this.handleDismiss}
+            header='Success!'
+            content='Record was linked to the DMP.'
+          />
+        )}
+      </>
+    );
+  }
+}
+
 // Modal begin
 
 export class DMPModal extends React.Component {
@@ -174,6 +212,7 @@ export class DMPModal extends React.Component {
       dmps: [],
       selectedDmps: [],
       userQuestions: {},
+      messageVisible: false
     };
   }
 
@@ -235,6 +274,10 @@ export class DMPModal extends React.Component {
     return response;
   }
 
+  showMessage() {
+    this.setState({ messageVisible: true });
+  }
+
   async addDatasetToDmps() {
     this.setLoading(true);
     let { selectedDmps } = this.state;
@@ -250,8 +293,14 @@ export class DMPModal extends React.Component {
         errors.push(e);
       }
     }
-    await Promise.all(responses);
-    console.log(errors);
+    try {
+      await Promise.all(responses);
+      this.showMessage();
+    } catch {
+      console.error(errors);
+    }
+
+    // console.log(errors);
     this.setLoading(false);
   }
 
@@ -285,6 +334,9 @@ export class DMPModal extends React.Component {
 
         <Modal.Content>
           <Modal.Description>
+            <GenericMessage
+              visible={this.state.messageVisible}
+            ></GenericMessage>
             <UserQuestions
               onChange={this.onUserQuestionsChange}
             ></UserQuestions>
@@ -400,7 +452,7 @@ export class DMPButton extends React.Component {
           icon
           labelPosition="left"
         >
-          <Icon name="share square" />
+          <Icon name="plus square" />
           {"Add to DMP"}
         </Button>
 

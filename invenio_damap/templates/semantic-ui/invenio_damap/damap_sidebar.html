@@ -1,6 +1,6 @@
 {# -*- coding: utf-8 -*-
 
-Copyright (C) 2022 TU Wien.
+Copyright (C) 2022-2024 TU Wien.
 
 Invenio-DAMAP is free software; you can redistribute it and/or modify it
 under the terms of the MIT License; see LICENSE file for more details.
@@ -9,12 +9,14 @@ under the terms of the MIT License; see LICENSE file for more details.
 {% from "invenio_damap/macros/detail.html" import render_dmp_button %}
 
 {# 2 constraints: Must be record owner and the record must be published #}
-<section id="damap-manage-menu" class="ui grid segment rdm-sidebar" aria-label="{{ _('Damap management') }}">
-  <div class="column" id="damapManagement">
-    <div id="invenio-damap-render">
+{% if current_user.id in record.parent.get("access").owned_by|map(attribute="user") and record.is_published %}
+  <section id="damap-manage-menu" class="ui grid segment rdm-sidebar" aria-label="{{ _('Damap management') }}">
+    <div class="column" id="damapManagement">
+      <h2 class="ui small header">{{ _('Additional actions') }}</h2>
+      <div id="invenio-damap-render">
     </div>
-</section>
+  </section>
 
+  {{ webpack['invenio-damap.js'] }}
 
-</div>
-{{ webpack['invenio-damap.js'] }}
+{% endif %}
