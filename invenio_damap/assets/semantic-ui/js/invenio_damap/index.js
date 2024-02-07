@@ -166,35 +166,45 @@ DMPEntry.propTypes = {
 // DMP Item end
 
 export class GenericMessage extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      visible: props.visible,
+      message: props.message,
     };
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.visible !== prevProps.visible) {
-      this.setState({ visible: this.props.visible });
+    if (this.props.message.visible !== prevProps.message.visible) {
+      this.setState({
+        message: {
+          ...this.props.message,
+        },
+      });
     }
   }
 
   handleDismiss = () => {
-    this.setState({ visible: false })
+    this.setState((prevState) => ({
+      message: {
+        ...prevState.message,
+        visible: false,
+      },
+    }));
   }
 
   render() {
-    const { visible } = this.state;
-
+    const { visible, type, header, content } = this.state.message;
     return (
       <>
         {visible && (
           <Message
-            success
+            info={type === 'info'}
+            warning={type === 'warning'}
+            success={type === 'success'}
+            error={type === 'error'}
             onDismiss={this.handleDismiss}
-            header='Success!'
-            content='Record was linked to the DMP.'
+            header={header}
+            content={content}
           />
         )}
       </>
@@ -212,7 +222,11 @@ export class DMPModal extends React.Component {
       dmps: [],
       selectedDmps: [],
       userQuestions: {},
-      messageVisible: false
+      message: {
+        visible: false,
+        type: null,
+        header: null,
+      },
     };
   }
 
@@ -274,12 +288,20 @@ export class DMPModal extends React.Component {
     return response;
   }
 
-  showMessage() {
-    this.setState({ messageVisible: true });
+  showMessage(type, header, content) {
+    this.setState({
+      message: {
+        visible: true,
+        type: type || 'info',
+        header: header,
+        content: content,
+      },
+    });
   }
 
   async addDatasetToDmps() {
     this.setLoading(true);
+    this.resetMessage();
     let { selectedDmps } = this.state;
     let { record } = this.props;
 
@@ -295,12 +317,11 @@ export class DMPModal extends React.Component {
     }
     try {
       await Promise.all(responses);
-      this.showMessage();
+      this.showMessage('success', 'Success!', 'Record was linked to the DMP(s).');
     } catch {
       console.error(errors);
+      this.showMessage('error', 'Error', 'An error occurred while adding to DMP(s).');
     }
-
-    // console.log(errors);
     this.setLoading(false);
   }
 
@@ -310,17 +331,34 @@ export class DMPModal extends React.Component {
     });
   };
 
+  resetMessage() {
+    this.setState({
+      message: {
+        visible: false,
+        type: null,
+        header: null,
+        content: null,
+      },
+    });
+  }
+
+  handleModalClose = () => {
+    this.resetMessage();
+  };
+
   render() {
     const { open, handleClose, record } = this.props;
     let { dmps, loading, selectedDmps } = this.state;
 
     let buttonText = `Add or update dataset for ${selectedDmps.length} DMP(s)`;
     let buttonIcon = "plus";
+    const isAddDMPButtonDisabled = selectedDmps.length === 0;
 
     return (
       <Modal
         open={open}
         onClose={handleClose}
+        onUnmount={this.handleModalClose}
         className="share-modal"
         role="dialog"
         aria-labelledby="access-link-modal-header"
@@ -335,7 +373,7 @@ export class DMPModal extends React.Component {
         <Modal.Content>
           <Modal.Description>
             <GenericMessage
-              visible={this.state.messageVisible}
+              message={this.state.message}
             ></GenericMessage>
             <UserQuestions
               onChange={this.onUserQuestionsChange}
@@ -385,10 +423,13 @@ export class DMPModal extends React.Component {
             loading={loading}
             labelPosition="left"
             onClick={async () => {
-              await this.addDatasetToDmps();
-              this.resetSelectedDmps();
-              this.fetchDMPs();
+              if (!isAddDMPButtonDisabled) {
+                await this.addDatasetToDmps();
+                this.resetSelectedDmps();
+                this.fetchDMPs();
+              }
             }}
+            disabled={isAddDMPButtonDisabled}
           >
             <Icon name={buttonIcon} />
             {buttonText}
