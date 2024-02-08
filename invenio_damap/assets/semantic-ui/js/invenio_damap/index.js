@@ -2,7 +2,7 @@
 // Copyright (C) 2023-2024 Graz University of Technology.
 // Copyright (C) 2023-2024 TU Wien.
 //
-// invenio-damap is free software; you can redistribute it and/or modify it
+// Invenio-DAMAP is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import ReactDOM from "react-dom";
@@ -18,6 +18,7 @@ import {
   Form,
   Checkbox,
   Label,
+  Popup
 } from "semantic-ui-react";
 import { http } from "react-invenio-forms";
 
@@ -146,7 +147,12 @@ export class DMPEntry extends React.Component {
           </Item.Description>
           {alreadyAddedToDMP && (
             <Item.Extra>
-              <Label icon="check" content="Already added" color="green" />
+              <Popup
+                content="If you link the record to this DMP, a new version will be created in DAMAP."
+                trigger={
+                  <Label icon="check" content="Already added" color="green" />
+                }
+              />
             </Item.Extra>
           )}
         </Item.Content>
@@ -193,11 +199,14 @@ export class GenericMessage extends React.Component {
   }
 
   render() {
-    const { visible, type, header, content } = this.state.message;
+    const { icon, visible, type, header, content, errors } = this.state.message;
     return (
       <>
         {visible && (
           <Message
+            // We override the icon size because it's not controllable when used in a <Message>.
+            // Related bug: https://github.com/Semantic-Org/Semantic-UI/issues/6441
+            icon={<Icon name={icon} style={{fontSize: '2em'}} />}
             info={type === 'info'}
             warning={type === 'warning'}
             success={type === 'success'}
@@ -205,6 +214,7 @@ export class GenericMessage extends React.Component {
             onDismiss={this.handleDismiss}
             header={header}
             content={content}
+            list={errors.map(error => error.dmp.project.title)}
           />
         )}
       </>
@@ -224,8 +234,11 @@ export class DMPModal extends React.Component {
       userQuestions: {},
       message: {
         visible: false,
+        icon: null,
         type: null,
         header: null,
+        content: null,
+        errors: []
       },
     };
   }
@@ -248,7 +261,7 @@ export class DMPModal extends React.Component {
       });
     } catch (error) {
       this.setLoading(false);
-      console.log(error);
+      console.error(error);
       // this.onError(error.response.data.message);
     }
     this.resetSelectedDmps();
@@ -288,13 +301,15 @@ export class DMPModal extends React.Component {
     return response;
   }
 
-  showMessage(type, header, content) {
+  showMessage(icon, type, header, content, errors) {
     this.setState({
       message: {
         visible: true,
+        icon: icon,
         type: type || 'info',
         header: header,
         content: content,
+        errors: errors || []
       },
     });
   }
@@ -309,18 +324,18 @@ export class DMPModal extends React.Component {
     let responses = [];
 
     for (let dmp of selectedDmps) {
-      try {
-        responses.push(this.onAddUpdateDataset(dmp.id, record));
-      } catch (e) {
-        errors.push(e);
-      }
+      responses.push(this.onAddUpdateDataset(dmp.id, record).catch(e => {
+        errors.push({ dmp, error: e });
+      }));
     }
-    try {
-      await Promise.all(responses);
-      this.showMessage('success', 'Success!', 'Record was linked to the DMP(s).');
-    } catch {
-      console.error(errors);
-      this.showMessage('error', 'Error', 'An error occurred while adding to DMP(s).');
+    await Promise.all(responses);
+
+    if (errors.length === 0) {
+      this.showMessage('check circle outline', 'success', 'Success!', 'Record was linked to DMP(s).');
+    } else if (errors.length === selectedDmps.length) {
+      this.showMessage('times circle outline', 'error', 'Error', 'Linking record to DMP(s) failed.');
+    } else {
+      this.showMessage('warning sign', 'warning', `Record was linked to DMP(s) with errors. Not linked/updated:`, '', errors);
     }
     this.setLoading(false);
   }
@@ -335,9 +350,11 @@ export class DMPModal extends React.Component {
     this.setState({
       message: {
         visible: false,
+        icon: null,
         type: null,
         header: null,
         content: null,
+        errors: []
       },
     });
   }
