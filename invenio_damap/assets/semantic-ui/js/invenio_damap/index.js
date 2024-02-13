@@ -6,19 +6,18 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import ReactDOM from "react-dom";
-import React, { useState } from "react";
+import React from "react";
 import {
+  Button,
+  Checkbox,
+  Form,
   Grid,
   Icon,
   Item,
-  Button,
+  Label,
   Message,
   Modal,
-  Radio,
-  Form,
-  Checkbox,
-  Label,
-  Popup
+  Popup,
 } from "semantic-ui-react";
 import { http } from "react-invenio-forms";
 
@@ -196,7 +195,7 @@ export class GenericMessage extends React.Component {
         visible: false,
       },
     }));
-  }
+  };
 
   render() {
     const { icon, visible, type, header, content, errors } = this.state.message;
@@ -206,15 +205,15 @@ export class GenericMessage extends React.Component {
           <Message
             // We override the icon size because it's not controllable when used in a <Message>.
             // Related bug: https://github.com/Semantic-Org/Semantic-UI/issues/6441
-            icon={<Icon name={icon} style={{fontSize: '2em'}} />}
-            info={type === 'info'}
-            warning={type === 'warning'}
-            success={type === 'success'}
-            error={type === 'error'}
+            icon={<Icon name={icon} style={{ fontSize: "2em" }} />}
+            info={type === "info"}
+            warning={type === "warning"}
+            success={type === "success"}
+            error={type === "error"}
             onDismiss={this.handleDismiss}
             header={header}
             content={content}
-            list={errors.map(error => error.dmp.project.title)}
+            list={errors.map((error) => error.dmp.project.title)}
           />
         )}
       </>
@@ -238,7 +237,7 @@ export class DMPModal extends React.Component {
         type: null,
         header: null,
         content: null,
-        errors: []
+        errors: [],
       },
     };
   }
@@ -262,7 +261,6 @@ export class DMPModal extends React.Component {
     } catch (error) {
       this.setLoading(false);
       console.error(error);
-      // this.onError(error.response.data.message);
     }
     this.resetSelectedDmps();
     this.setLoading(false);
@@ -306,10 +304,10 @@ export class DMPModal extends React.Component {
       message: {
         visible: true,
         icon: icon,
-        type: type || 'info',
+        type: type || "info",
         header: header,
         content: content,
-        errors: errors || []
+        errors: errors || [],
       },
     });
   }
@@ -324,18 +322,36 @@ export class DMPModal extends React.Component {
     let responses = [];
 
     for (let dmp of selectedDmps) {
-      responses.push(this.onAddUpdateDataset(dmp.id, record).catch(e => {
-        errors.push({ dmp, error: e });
-      }));
+      responses.push(
+        this.onAddUpdateDataset(dmp.id, record).catch((e) => {
+          errors.push({ dmp, error: e });
+        })
+      );
     }
     await Promise.all(responses);
 
     if (errors.length === 0) {
-      this.showMessage('check circle outline', 'success', 'Success!', 'Record was linked to DMP(s).');
+      this.showMessage(
+        "check circle outline",
+        "success",
+        "Success!",
+        "Record was linked to DMP(s)."
+      );
     } else if (errors.length === selectedDmps.length) {
-      this.showMessage('times circle outline', 'error', 'Error', 'Linking record to DMP(s) failed.');
+      this.showMessage(
+        "times circle outline",
+        "error",
+        "Error",
+        "Linking record to DMP(s) failed."
+      );
     } else {
-      this.showMessage('warning sign', 'warning', `Record was linked to DMP(s) with errors. Not linked/updated:`, '', errors);
+      this.showMessage(
+        "warning sign",
+        "warning",
+        `Record was linked to DMP(s) with errors. Not linked/updated:`,
+        "",
+        errors
+      );
     }
     this.setLoading(false);
   }
@@ -354,7 +370,7 @@ export class DMPModal extends React.Component {
         type: null,
         header: null,
         content: null,
-        errors: []
+        errors: [],
       },
     });
   }
@@ -389,9 +405,7 @@ export class DMPModal extends React.Component {
 
         <Modal.Content>
           <Modal.Description>
-            <GenericMessage
-              message={this.state.message}
-            ></GenericMessage>
+            <GenericMessage message={this.state.message}></GenericMessage>
             <UserQuestions
               onChange={this.onUserQuestionsChange}
             ></UserQuestions>
