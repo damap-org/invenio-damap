@@ -63,8 +63,8 @@ export class UserQuestions extends React.Component {
     super(props);
     this.state = {
       selectedValues: {
-        personal_data: "unknown",
-        sensitive_data: "unknown",
+        personal_data: "no",
+        sensitive_data: "no",
       },
     };
   }
@@ -88,7 +88,6 @@ export class UserQuestions extends React.Component {
             optionsAndValues={structuredClone({
               Yes: "yes",
               No: "no",
-              Unknown: "unknown",
             })}
             selectedValue={this.state.selectedValues[question]}
             onChange={(value) => {
