@@ -8,10 +8,16 @@
 """Invenio-DAMAP resource."""
 
 from flask import g
-from flask_resources import Resource, resource_requestctx, response_handler, route
+from flask_resources import (
+    Resource,
+    resource_requestctx,
+    response_handler,
+    route,
+)
 from invenio_records_resources.resources.errors import ErrorHandlersMixin
 from invenio_records_resources.resources.records.resource import (
     request_data,
+    request_extra_args,
     request_search_args,
     request_view_args,
 )
@@ -51,6 +57,7 @@ class InvenioDAMAPResource(ErrorHandlersMixin, Resource):
     # Primary Interface
     #
     @request_search_args
+    @request_extra_args
     @response_handler(many=True)
     def search(self):
         """Perform a search over the items."""

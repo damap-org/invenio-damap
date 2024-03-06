@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2022 Graz University of Technology.
-# Copyright (C) 2022 TU Wien.
-
+# Copyright (C) 2022-2024 TU Wien.
 #
 # Invenio-DAMAP is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
-"""Extension."""
-
-from flask import Blueprint
+"""Invenio module for connection to DAMAP."""
 
 from invenio_damap.resources import InvenioDAMAPResource, InvenioDAMAPResourceConfig
 from invenio_damap.services import InvenioDAMAPService, InvenioDAMAPServiceConfig
@@ -39,7 +36,7 @@ class InvenioDAMAP(object):
         Override configuration variables with the values in this package.
         """
         for k in dir(config):
-            if k.startswith("INVENIO_DAMAP_"):
+            if k.startswith("DAMAP_"):
                 app.config.setdefault(k, getattr(config, k))
 
     def init_services(self, app):
