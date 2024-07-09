@@ -1,33 +1,24 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2022      Graz University of Technology.
+# Copyright (C) 2023-2024 TU Wien.
 #
 # Invenio-DAMAP is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
 """Invenio-DAMAP service."""
 
-import re
-
 import requests
-from flask_babelex import lazy_gettext as _
+
 from flask_sqlalchemy import Pagination
 from invenio_rdm_records.proxies import current_rdm_records_service
-from invenio_records_resources.records import Record
 from invenio_records_resources.services import Service
 from invenio_records_resources.services.base import LinksTemplate
 from invenio_records_resources.services.records.schema import (
     ServiceSchemaWrapper,
 )
-from sqlalchemy import or_
-from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.sql import text
 
 from invenio_damap import export as InvenioDAMAPExport
-from invenio_damap.services.errors import (
-    InvenioDAMAPDMPNotFoundError,
-    InvenioDAMAPError,
-)
 
 
 class InvenioDAMAPService(Service):
@@ -55,9 +46,7 @@ class InvenioDAMAPService(Service):
             "Authorization": self.config.damap_shared_secret,
         }
 
-        headers.update(
-            self.config.damap_custom_header_function(identity=identity)
-        )
+        headers.update(self.config.damap_custom_header_function(identity=identity))
 
         return headers
 
@@ -116,9 +105,7 @@ class InvenioDAMAPService(Service):
             identity,
             dmps,
             params=search_params,
-            links_tpl=LinksTemplate(
-                self.config.links_search, context={"args": params}
-            ),
+            links_tpl=LinksTemplate(self.config.links_search, context={"args": params}),
             links_item_tpl=self.links_item_tpl,
         )
 
@@ -126,9 +113,7 @@ class InvenioDAMAPService(Service):
         page = params.get("page", 1)
         size = params.get(
             "size",
-            self.config.search.pagination_options.get(
-                "default_results_per_page"
-            ),
+            self.config.search.pagination_options.get("default_results_per_page"),
         )
 
         _search_cls = self.config.search
@@ -140,15 +125,12 @@ class InvenioDAMAPService(Service):
         )
         _sort_direction_name = (
             params.get("sort_direction")
-            if params.get("sort_direction")
-            in _search_cls.sort_direction_options
+            if params.get("sort_direction") in _search_cls.sort_direction_options
             else _search_cls.sort_direction_default
         )
 
         sort = _search_cls.sort_options.get(_sort_name)
-        sort_direction = _search_cls.sort_direction_options.get(
-            _sort_direction_name
-        )
+        sort_direction = _search_cls.sort_direction_options.get(_sort_direction_name)
 
         query_params = params.get("q", "")
 
