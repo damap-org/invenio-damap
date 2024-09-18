@@ -8,18 +8,35 @@
 import ReactDOM from "react-dom";
 import React from "react";
 import { Grid } from "semantic-ui-react";
-import { DMPButton } from "./DMPButton";
 
-const element = document.getElementById("invenio-damap-render");
+import { DMPAddButton } from "./DMPAddButton";
+import { DMPAuthButton } from "./DMPAuthButton";
 
-const recordManagementAppDiv = document.getElementById("recordManagement");
-const record = JSON.parse(recordManagementAppDiv.dataset.record);
+const element = document.getElementById("dmps-container");
 
-// the render element won't be available if we're not the record owner
-element &&
+if (element) {
+  const availableDmps = element.dataset.dmps;
+  const damapUrl = element.dataset.damapUrl;
+
+  const parsedAvailableDmps = availableDmps ? JSON.parse(availableDmps) : [];
+  const recordManagementAppDiv = document.getElementById("recordManagement");
+  const record = JSON.parse(recordManagementAppDiv.dataset.record);
+
+  const ButtonComponent =
+    parsedAvailableDmps.length > 0 ? (
+      <DMPAddButton
+        open={false}
+        disabled={false}
+        record={record}
+        dmps={parsedAvailableDmps}
+      />
+    ) : (
+      <DMPAuthButton loading={false} damapUrl={damapUrl} />
+    );
+
+  // TODO: 'render()' is deprecated, use 'root.render()'
   ReactDOM.render(
-    <Grid.Column className="pt-5">
-      <DMPButton open={false} disabled={false} record={record} />
-    </Grid.Column>,
+    <Grid.Column className="pt-5">{ButtonComponent}</Grid.Column>,
     element
   );
+}

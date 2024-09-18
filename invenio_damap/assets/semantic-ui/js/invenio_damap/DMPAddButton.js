@@ -6,19 +6,22 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import React from "react";
-import { Button, Icon } from "semantic-ui-react";
-
 import PropTypes from "prop-types";
+
+import { Button, Icon } from "semantic-ui-react";
 
 import { DMPModal } from "./DMPModal";
 
-export class DMPButton extends React.Component {
+export class DMPAddButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       record: props.record,
       disabled: props.disabled,
       open: props.open,
+      linkedAccount: null,
+      loading: false,
+      dmps: props.dmps,
     };
   }
 
@@ -34,8 +37,12 @@ export class DMPButton extends React.Component {
     });
   };
 
+  updateDmps = (newDmps) => {
+    this.setState({ dmps: newDmps });
+  };
+
   render() {
-    const { disabled, open, record } = this.state;
+    const { disabled, open, record, loading, dmps } = this.state;
 
     return (
       <>
@@ -57,6 +64,8 @@ export class DMPButton extends React.Component {
             open={open}
             handleClose={this.handleClose}
             record={record}
+            dmps={dmps}
+            updateDmps={this.updateDmps}
           />
         )}
       </>
@@ -64,13 +73,15 @@ export class DMPButton extends React.Component {
   }
 }
 
-DMPButton.propTypes = {
+DMPAddButton.propTypes = {
   disabled: PropTypes.bool,
   record: PropTypes.object.isRequired,
   open: PropTypes.bool,
+  loading: PropTypes.bool,
+  dmps: PropTypes.array.isRequired,
 };
 
-DMPButton.defaultProps = {
+DMPAddButton.defaultProps = {
   disabled: false,
   open: false,
 };

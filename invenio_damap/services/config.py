@@ -8,7 +8,7 @@
 
 """Invenio-DAMAP service API configuration."""
 
-from flask_babelex import lazy_gettext as _
+from invenio_i18n import gettext as _
 from invenio_records_resources.services import ServiceConfig
 from invenio_records_resources.services.base.config import ConfiguratorMixin, FromConfig
 from invenio_records_resources.services.records.links import pagination_links
@@ -64,7 +64,8 @@ class InvenioDAMAPServiceConfig(ServiceConfig, ConfiguratorMixin):
     """Service factory configuration."""
 
     damap_base_url = FromConfig("DAMAP_BASE_URL", "")
-    damap_person_id_function = FromConfig("DAMAP_PERSON_ID_FUNCTION")
+    damap_jwt_encode_algorithm = FromConfig("DAMAP_JWT_ENCODE_ALGORITHM")
+    damap_person_function = FromConfig("DAMAP_PERSON_FUNCTION")
     damap_custom_header_function = FromConfig("DAMAP_CUSTOM_HEADER_FUNCTION")
     damap_shared_secret = FromConfig("DAMAP_SHARED_SECRET")
 

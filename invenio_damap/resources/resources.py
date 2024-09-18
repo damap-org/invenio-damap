@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2022-2024 Graz University of Technology.
+# Copyright (C) 2024 TU Wien.
 #
 # Invenio-DAMAP is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -8,12 +9,7 @@
 """Invenio-DAMAP resource."""
 
 from flask import g
-from flask_resources import (
-    Resource,
-    resource_requestctx,
-    response_handler,
-    route,
-)
+from flask_resources import Resource, resource_requestctx, response_handler, route
 from invenio_records_resources.resources.errors import ErrorHandlersMixin
 from invenio_records_resources.resources.records.resource import (
     request_data,

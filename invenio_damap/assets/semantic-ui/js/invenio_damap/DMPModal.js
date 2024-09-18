@@ -6,9 +6,11 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { Button, Form, Icon, Item, Message, Modal } from "semantic-ui-react";
 import { http } from "react-invenio-forms";
-import PropTypes from "prop-types";
+
 import { DMPEntry } from "./DMPEntry";
 
 export class RadioGroupQuestion extends React.Component {
@@ -152,7 +154,7 @@ export class DMPModal extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      dmps: [],
+      dmps: props.dmps,
       selectedDmps: [],
       userQuestions: {},
       message: {
@@ -179,18 +181,15 @@ export class DMPModal extends React.Component {
     this.setLoading(true);
     try {
       let dmpSearchResult = await http.get("/api/invenio_damap/damap/dmp");
-      this.setState({
-        dmps: dmpSearchResult.data.hits.hits,
-      });
+      const newDmps = dmpSearchResult.data.hits.hits;
+      this.setState({ dmps: newDmps });
+      // Pass the updated DMPs back to the button
+      this.props.updateDmps(newDmps);
     } catch (error) {
       this.onError(error);
     }
     this.resetSelectedDmps();
     this.setLoading(false);
-  }
-
-  componentDidMount() {
-    this.fetchDMPs();
   }
 
   onUserQuestionsChange = (questionsAndAnswers) => {
@@ -270,7 +269,7 @@ export class DMPModal extends React.Component {
       this.showMessage(
         "warning sign",
         "warning",
-        `Record was linked to DMP(s) with errors. Not linked/updated:`,
+        "Record was linked to DMP(s) with errors. Not linked/updated:",
         "",
         errors
       );
@@ -399,4 +398,6 @@ DMPModal.propTypes = {
   record: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  dmps: PropTypes.array.isRequired,
+  updateDmps: PropTypes.func.isRequired,
 };

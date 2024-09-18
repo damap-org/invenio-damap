@@ -6,9 +6,9 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import React from "react";
-import { Checkbox, Item, Label, Popup } from "semantic-ui-react";
-
 import PropTypes from "prop-types";
+
+import { Checkbox, Item, Label, Popup } from "semantic-ui-react";
 
 export class DMPEntry extends React.Component {
   constructor(props) {
@@ -47,7 +47,9 @@ export class DMPEntry extends React.Component {
           {alreadyAddedToDMP && (
             <Item.Extra>
               <Popup
-                content="If you link the record to this DMP, a new version will be created in DAMAP."
+                content={
+                  "If you link the record to this DMP, a new version will be created in DAMAP."
+                }
                 trigger={
                   <Label icon="check" content="Already added" color="green" />
                 }
