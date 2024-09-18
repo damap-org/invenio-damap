@@ -1,16 +1,26 @@
 {# -*- coding: utf-8 -*-
 
-  Copyright (C) 2022 TU Wien.
+  Copyright (C) 2022 Graz University of Technology.
+  Copyright (C) 2022-2024 TU Wien.
 
   Invenio-DAMAP is free software; you can redistribute it and/or modify it
   under the terms of the MIT License; see LICENSE file for more details.
 #}
 
 {%- macro render_dmp_button() %}
-  <div class="column pt-5 pb-5">
-    <button id="damap-button" class="ui medium fluid icon positive left labeled button" type="button">
-      <i aria-hidden="true" class="plus icon"></i>
-      Add to DMP
-    </button>
-  </div>
+  {% set user_jwt = create_auth_jwt() %}
+  {% set dmp_list = query_damap_madmps(user_jwt) if user_jwt is not none else none %}
+  {% set DAMAP_URL = get_damap_url() %}
+
+  {% if dmp_list is not none %}
+    {% set dmps = dmp_list['hits']['hits'] if dmp_list else [] %}
+    <div class="column pt-5 pb-5" id="dmps-container" data-dmps='{{ dmps | tojson }}' data-damap-url="{{ DAMAP_URL }}">
+    </div>
+    {{ webpack['invenio-damap.js'] }}
+  {% else %}
+    <div class="ui warning message">
+      <div class="header">{{ _("Connection Error") }}</div>
+      <p>{{ _("There was an issue connecting to DAMAP. Please try again later.") }}</p>
+    </div>
+  {% endif %}
 {%- endmacro %}

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022      Graz University of Technology.
+# Copyright (C) 2022 Graz University of Technology.
 # Copyright (C) 2023-2024 TU Wien.
 #
 # Invenio-DAMAP is free software; you can redistribute it and/or modify
@@ -8,15 +8,18 @@
 
 """Invenio-DAMAP service."""
 
+from time import time
+
+import jwt
 import requests
 
+from flask_security import current_user
 from flask_sqlalchemy import Pagination
+from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_records_resources.services import Service
 from invenio_records_resources.services.base import LinksTemplate
-from invenio_records_resources.services.records.schema import (
-    ServiceSchemaWrapper,
-)
+from invenio_records_resources.services.records.schema import ServiceSchemaWrapper
 
 from invenio_damap import export as InvenioDAMAPExport
 
@@ -40,56 +43,46 @@ class InvenioDAMAPService(Service):
             self.config.links_item,
         )
 
-    def _create_headers(self, identity):
-        """Creates the auth header and additonal ones, if defined."""
-        headers = {
-            "Authorization": self.config.damap_shared_secret,
-        }
+    def _create_auth_jwt(self, identity, expires_in=600):
+        """Creates an authorization jwt token for DAMAP."""
+        person_data = self.config.damap_person_function(identity)
 
-        headers.update(self.config.damap_custom_header_function(identity=identity))
-
-        return headers
-
-    def _get_user_id(self, identity):
-        """Get the user id from the identity."""
-        return self.config.damap_person_id_function(identity=identity)
-
-    def add_record_to_dmp(self, identity, recid, dmp_id, data):
-        """Add the provided record to the DMP"""
-
-        person_id = self._get_user_id(identity=identity)
-        headers = self._create_headers(identity)
-
-        # this will also perform permission checks, ensuring the user may access the record.
-        record = current_rdm_records_service.read(identity, recid)
-        exported_record = InvenioDAMAPExport.export_as_madmp(record, **data)
-
-        r = requests.post(
-            url=self.config.damap_base_url
-            + "/api/invenio-damap/dmps/{}/{}".format(dmp_id, person_id),
-            headers=headers,
-            json=exported_record,
+        # more info about JWT claims: https://www.rfc-editor.org/rfc/rfc7519.html#section-4
+        return jwt.encode(
+            {
+                "sub": str(current_user.id),
+                "exp": int(time()) + expires_in,
+                "iat": int(time()),
+                "invenio-damap": {
+                    "identifiers": {
+                        **person_data,
+                    }
+                },
+            },
+            self.config.damap_shared_secret,
+            self.config.damap_jwt_encode_algorithm,
         )
 
-        r.raise_for_status()
+    def _create_headers(self, identity, jwt=None, *args, **kwargs):
+        """Creates the auth header and additional ones, if defined."""
+        headers = self.config.damap_custom_header_function(identity=identity)
+        headers.update(
+            {"X-Auth": (f"{jwt}" if jwt else f"{self._create_auth_jwt(identity)}")}
+        )
+        return headers
 
-        return record
-
-    def search(self, identity, params):
+    def search(self, identity, params, jwt=None, **kwargs):
         """Perform search for DMPs."""
         self.require_permission(identity, "read")
 
         search_params = self._get_search_params(params)
-        person_id = self._get_user_id(identity=identity)
-        headers = self._create_headers(identity)
+        headers = self._create_headers(identity, jwt)
 
         r = requests.get(
-            url=self.config.damap_base_url
-            + "/api/invenio-damap/dmps/person/{}".format(person_id),
+            url=self.config.damap_base_url + "/api/madmps",
             headers=headers,
             params=search_params,
         )
-
         r.raise_for_status()
 
         dmps = Pagination(
@@ -108,6 +101,24 @@ class InvenioDAMAPService(Service):
             links_tpl=LinksTemplate(self.config.links_search, context={"args": params}),
             links_item_tpl=self.links_item_tpl,
         )
+
+    def add_record_to_dmp(self, identity, recid, dmp_id, data, jwt=None, **kwargs):
+        """Add the provided record to the DMP."""
+
+        headers = self._create_headers(identity, jwt)
+
+        # this will also perform permission checks, ensuring the user may access the record.
+        record = current_rdm_records_service.read(identity, recid)
+        exported_record = InvenioDAMAPExport.export_as_madmp(record, **data)
+
+        r = requests.post(
+            url=self.config.damap_base_url + "/api/madmps",
+            headers=headers,
+            json={"dmp_id": dmp_id, "dataset": exported_record},
+        )
+        r.raise_for_status()
+
+        return record
 
     def _get_search_params(self, params):
         page = params.get("page", 1)

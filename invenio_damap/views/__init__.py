@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of Invenio.
+# This file is part of Invenio-DAMAP.
 # Copyright (C) 2022 Graz University of Technology.
 #
 # Invenio-DAMAP is free software; you can redistribute it and/or modify it
