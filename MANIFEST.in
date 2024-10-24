@@ -1,0 +1,39 @@
+# -*- coding: utf-8 -*-
+#
+# This file is part of Invenio-DAMAP.
+# Copyright (C) 2024 TU Wien.
+
+
+exclude .dockerignore
+exclude .editorconfig
+exclude .tx/config
+exclude pytest.ini
+include *.txt
+include MAINTAINERS
+include *.rst
+include babel.ini
+include .lgtm
+include LICENSE
+include .prettierrc
+include *.yml
+include run-js-linter.sh
+include run-tests.sh
+include run-i18n-tests.sh
+prune docs/_build
+prune docs/_build
+prune tests
+recursive-include .github/workflows *.yml
+recursive-include docs *.bat
+recursive-include docs *.py
+recursive-include docs *.rst
+recursive-include docs *.txt
+recursive-include docs Makefile
+recursive-include invenio_damap *.html
+recursive-include invenio_damap *.js
+recursive-include invenio_damap *.json
+recursive-include invenio_damap *.less
+recursive-include invenio_damap *.mo
+recursive-include invenio_damap *.po
+recursive-include invenio_damap *.pot
+recursive-include invenio_damap *.py
+include .git-blame-ignore-revs
