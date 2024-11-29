@@ -9,15 +9,18 @@
 
 {% from "invenio_damap/macros/detail.html" import render_dmp_button %}
 
-{# 2 constraints: Must be record owner and the record must be published #}
-{% if current_user.id|string == record.parent.access.owned_by.user and record.is_published %}
-  <section id="damap-manage-menu" class="ui grid segment rdm-sidebar" aria-label="{{ _('Damap management') }}">
-    <div class="column" id="damapManagement">
-      <h2 class="ui small header">{{ _('Additional actions') }}</h2>
-      <div id="invenio-damap-render">{{ render_dmp_button() }}</div>
-    </div>
-  </section>
+{% set DAMAP_INTEGRATION_ENABLED = damap_integration_enabled() %}
+{% if DAMAP_INTEGRATION_ENABLED %}
+  {# 2 constraints: Must be record owner and the record must be published #}
+  {% if current_user.id|string == record.parent.access.owned_by.user and record.is_published %}
+    <section id="damap-manage-menu" class="ui grid segment rdm-sidebar" aria-label="{{ _('Damap management') }}">
+      <div class="column" id="damapManagement">
+        <h2 class="ui small header">{{ _('Additional actions') }}</h2>
+        <div id="invenio-damap-render">{{ render_dmp_button() }}</div>
+      </div>
+    </section>
 
-  {{ webpack['invenio-damap.js'] }}
+    {{ webpack['invenio-damap.js'] }}
 
+  {% endif %}
 {% endif %}

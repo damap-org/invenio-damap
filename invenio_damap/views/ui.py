@@ -24,6 +24,11 @@ def create_ui_blueprint(app):
         static_folder="../static",
     )
 
+    @blueprint.app_template_global("damap_integration_enabled")
+    def damap_enabled():
+        """Helper function to get DAMAP_INTEGRATION_ENABLED."""
+        return current_app.config.get("DAMAP_INTEGRATION_ENABLED", "")
+
     @blueprint.app_template_global("create_auth_jwt")
     def create_auth_jwt():
         """Helper function for jinja templates to create a JWT token for the user."""
