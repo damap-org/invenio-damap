@@ -18,6 +18,9 @@ DAMAP_BASE_URL = "http://localhost:8085"
 DAMAP_CUSTOM_HEADER_FUNCTION = custom_header_fetcher
 """Default function used to define additional headers for HTTP requests to DAMAP."""
 
+DAMAP_INTEGRATION_ENABLED = False
+"""Flag to determine whether the DAMAP integration is enabled."""
+
 DAMAP_DMP_DATASET_DISTRIBUTION_HOST = {
     "availability": None,
     "backup_frequency": None,
