@@ -12,16 +12,27 @@ from time import time
 
 import jwt
 import requests
-
 from flask_security import current_user
-from flask_sqlalchemy import Pagination
 from invenio_i18n import lazy_gettext as _
+from invenio_db import db
 from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_records_resources.services import Service
 from invenio_records_resources.services.base import LinksTemplate
 from invenio_records_resources.services.records.schema import ServiceSchemaWrapper
 
 from invenio_damap import export as InvenioDAMAPExport
+
+
+def _paginate(*args, **kwargs):
+    """Compatibility layer for pagination between Flask-SQLAlchemy v2 and v3."""
+    try:
+        # first try the v3 approach
+        return db.paginate(*args, **kwargs)
+
+    except AttributeError:
+        from flask_sqlalchemy import Pagination
+
+        return Pagination(*args, **kwargs)
 
 
 class InvenioDAMAPService(Service):
@@ -85,7 +96,7 @@ class InvenioDAMAPService(Service):
         )
         r.raise_for_status()
 
-        dmps = Pagination(
+        dmps = _paginate(
             query=None,
             items=r.json(),
             page=search_params["page"],
