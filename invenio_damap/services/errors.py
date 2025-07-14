@@ -8,8 +8,6 @@
 
 """Errors for InvenioDAMAP."""
 
-from invenio_i18n import gettext as _
-
 
 class InvenioDAMAPError(Exception):
     """Base class for InvenioDAMAP errors."""

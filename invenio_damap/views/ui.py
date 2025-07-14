@@ -12,6 +12,7 @@
 from flask import Blueprint, current_app, g
 from requests.exceptions import HTTPError
 
+
 #
 # Registration
 #
