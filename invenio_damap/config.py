@@ -11,7 +11,6 @@
 from .fetchers import custom_header_fetcher
 from .generators import default_namespaced_id_generator
 
-
 DAMAP_BASE_URL = "http://localhost:8085"
 """The base URL for the DAMAP server."""
 
