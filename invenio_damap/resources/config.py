@@ -10,6 +10,8 @@
 
 import marshmallow as ma
 from flask_resources import HTTPJSONException, ResourceConfig, create_error_handler
+from flask_resources.responses import ResponseHandler
+from flask_resources.serializers import JSONSerializer
 from invenio_records_resources.resources.errors import ErrorHandlersMixin
 from invenio_records_resources.resources.records.args import SearchRequestArgsSchema
 
@@ -61,4 +63,8 @@ class InvenioDAMAPResourceConfig(ResourceConfig):
     }
     request_search_args = InvenioDAMAPSearchRequestArgsSchema
 
+    response_handlers = {
+        **ResourceConfig.response_handlers,
+        "application/vnd.inveniordm.v1+json": ResponseHandler(JSONSerializer()),
+    }
     error_handlers = invenio_damap_error_handlers
