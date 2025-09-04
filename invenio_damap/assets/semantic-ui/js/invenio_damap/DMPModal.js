@@ -373,6 +373,8 @@ export class DMPModal extends React.Component {
 
           <Button
             primary
+            size="small"
+            className="ml-15"
             floated="right"
             icon
             loading={loading}
