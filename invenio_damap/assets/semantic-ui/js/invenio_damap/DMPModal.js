@@ -180,7 +180,9 @@ export class DMPModal extends React.Component {
   async fetchDMPs() {
     this.setLoading(true);
     try {
-      let dmpSearchResult = await http.get("/api/invenio_damap/damap/dmp");
+      let dmpSearchResult = await http.get("/api/invenio_damap/damap/dmp", {
+        headers: { Accept: "application/json" },
+      });
       const newDmps = dmpSearchResult.data.hits.hits;
       this.setState({ dmps: newDmps });
       // Pass the updated DMPs back to the button
@@ -214,7 +216,8 @@ export class DMPModal extends React.Component {
 
     let response = await http.post(
       `/api/invenio_damap/damap/dmp/${dmp_id}/dataset/${record.id}`,
-      body
+      body,
+      { headers: { Accept: "application/json" } },
     );
 
     return response;
@@ -246,7 +249,7 @@ export class DMPModal extends React.Component {
       responses.push(
         this.onAddUpdateDataset(dmp.id, record).catch((e) => {
           errors.push({ dmp, error: e });
-        })
+        }),
       );
     }
     await Promise.all(responses);
@@ -256,14 +259,14 @@ export class DMPModal extends React.Component {
         "check circle outline",
         "success",
         "Success!",
-        "Record was linked to DMP(s)."
+        "Record was linked to DMP(s).",
       );
     } else if (errors.length === selectedDmps.length) {
       this.showMessage(
         "times circle outline",
         "error",
         "Error",
-        "Linking record to DMP(s) failed."
+        "Linking record to DMP(s) failed.",
       );
     } else {
       this.showMessage(
@@ -271,7 +274,7 @@ export class DMPModal extends React.Component {
         "warning",
         "Record was linked to DMP(s) with errors. Not linked/updated:",
         "",
-        errors
+        errors,
       );
     }
     this.setLoading(false);

@@ -37,6 +37,6 @@ if (element) {
   // TODO: 'render()' is deprecated, use 'root.render()'
   ReactDOM.render(
     <Grid.Column className="pt-5">{ButtonComponent}</Grid.Column>,
-    element
+    element,
   );
 }
