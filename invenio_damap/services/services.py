@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2022 Graz University of Technology.
-# Copyright (C) 2023-2024 TU Wien.
+# Copyright (C) 2023-2025 TU Wien.
 #
 # Invenio-DAMAP is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -13,7 +13,6 @@ from time import time
 import jwt
 import requests
 from flask_security import current_user
-from invenio_db import db
 from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_records_resources.services import Service
 from invenio_records_resources.services.base import LinksTemplate
@@ -26,7 +25,21 @@ def _paginate(*args, **kwargs):
     """Compatibility layer for pagination between Flask-SQLAlchemy v2 and v3."""
     try:
         # first try the v3 approach
-        return db.paginate(*args, **kwargs)
+        from flask_sqlalchemy.pagination import Pagination
+
+        class CustomPagination(Pagination):
+            """Custom pagination not based on DB queries."""
+
+            def _query_items(self):
+                """Fake execution of a query to get the items on the current page."""
+                # `self._query_args` comes from the kwargs passed to the constructor
+                return self._query_args["items"]
+
+            def _query_count(self):
+                """Fake execution of a query to get the total number of items."""
+                return self._query_args.get("total") or len(self._query_items())
+
+        return CustomPagination(*args, **kwargs)
 
     except AttributeError:
         from flask_sqlalchemy import Pagination
