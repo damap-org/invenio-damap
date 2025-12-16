@@ -5,9 +5,9 @@
     it under the terms of the MIT License; see LICENSE file for more details.
 -->
 
-# invenio-damap
+# Invenio-DAMAP
 
-Module for connecting InvenioRDM-based repositories to DAMAP.
+Module for connecting InvenioRDM-based repositories to DAMAP, originally started as part of the [FAIR Data Austria](https://forschungsdaten.at/en/fair-data-austria/) project.
 
 **_NOTE:_** The current module is overriding the detail sidebar to add an extra button. At the moment, there is no guarantee that the configuration of this module will come after the one from invenio-app-rdm. Thus, the following line must be added to your `invenio.cfg` file:
 
